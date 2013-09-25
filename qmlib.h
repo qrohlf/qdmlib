@@ -1,3 +1,4 @@
+#include <FPT.h>
 /*
  * QUINN & MILES' FANTASTIC LIBRARY
  * Licensed under the WTFPL
@@ -9,3 +10,4 @@ void translate_polygon(double*, double*, int, double, double);
 void rotate_polygon(double*, double*, int, double);
 double* bounding_box(double*, double*, int);
 double* center_point(double*, double*, int);
+void sort_asc(double*, int);

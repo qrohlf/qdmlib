@@ -1,4 +1,5 @@
-#include "qlib.h"
+#include "qmlib.h"
+
 
 /*
  * Takes a file pointer located at the number of vertices, 
@@ -16,6 +17,26 @@ int read_points_from_file(FILE* f, double* x, double* y) {
 		fscanf(f, "%lf %lf", &x[i], &y[i]);
 	}
 	return vertices;
+}
+
+/*
+ * Sort an array of doubles containing n elements in ascending order
+ */
+void sort_asc(double* arr, int n) {
+    int min;
+    double temp;
+    for(int i=0; i<n; i++) {
+        min = i; //min holds the location of the smallest known item
+        // If there are any smaller values past i, swap them with i
+        for(int j=i+1; j<n; j++) {
+            if (arr[j] < arr[min]) {
+                min = j;
+                temp = arr[i];
+                arr[i] = arr[min];
+                arr[min] = temp;
+            }
+        }
+    }
 }
 
 /* 
@@ -43,11 +64,11 @@ void rotate_polygon(double* x, double* y, int vertices, double rot_radian) {
  * (in that order)
  */
 double* bounding_box(double* x, double* y, int vertices) {
-
+    return 0; //avoid the compiler warnings
 }
 
 double* center_point(double* x, double* y, int vertices) {
-    
+    return 0; //avoid the compiler warnings
 }
 
 
