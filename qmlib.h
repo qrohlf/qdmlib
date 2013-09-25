@@ -11,3 +11,6 @@ void rotate_polygon(double*, double*, int, double);
 double* bounding_box(double*, double*, int);
 double* center_point(double*, double*, int);
 void sort_asc(double*, int);
+double max(double*, int);
+double min(double*, int);
+int in_range(double, double, double);

@@ -39,6 +39,40 @@ void sort_asc(double* arr, int n) {
     }
 }
 
+/*
+ * Return the smallest element of an array of doubles containing n elements.
+ * n must be >0.
+ */
+double min(double* arr, int n) {
+    double min = arr[0];
+    for(int i=0; i<n; i++) {
+        if (arr[i] < min) min = arr[i];
+    }
+    return min;
+}
+
+/*
+ * Return the largest element of an array of doubles containing n elements.
+ * n must be >0.
+ */
+double max(double* arr, int n) {
+    double max = arr[0];
+    for(int i=0; i<n; i++) {
+        if (arr[i] > max) max = arr[i];
+    }
+    return max;
+}
+
+/*
+ * Return whether x is included in [a, b]
+ */
+int in_range(double x, double a, double b) {
+    double range[] = {a, b};
+    double lower = min(range, 2);
+    double upper = max(range, 2);
+    return (x <= upper && x >= lower);
+}
+
 /* 
  * Takes a polygon specified by x and y arrays and scales its 
  * coordinates according to x_scale and y_scale
