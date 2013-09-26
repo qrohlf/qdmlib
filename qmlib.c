@@ -1,3 +1,8 @@
+/*
+ * QUINN & MILES' FANTASTIC LIBRARY
+ * Licensed under the WTFPL
+ */
+
 #include "qmlib.h"
 
 
@@ -75,11 +80,21 @@ int in_range(double x, double a, double b) {
 
 /* 
  * Takes a polygon specified by x and y arrays and scales its 
- * coordinates according to x_scale and y_scale
+ * coordinates about the polygon's center point according to x_scale and y_scale
  */
-void scale_polygon(double* x, double* y, int vertices, double x_scale, double y_scale) {
-
+void scale_polygon(double* x, double* y, int n, double x_scale, double y_scale) {
+    double centerx = (max(x, n) + min(x, n))/2;
+    double centery = (max(y, n) + min(y, n))/2;
+    scale_polygon_about(x, y, n, x_scale, y_scale, centerx, centery);
 }
+
+void scale_polygon_about(double* x, double* y, int n, double x_scale, double y_scale, double aboutx, double abouty) {
+    for (int i=0; i<n; i++) {
+        x[i] = x_scale * (x[i] - aboutx) + aboutx;
+        y[i] = y_scale * (y[i] - abouty) + abouty;
+    }
+}
+
 /* 
  * Takes a polygon specified by x and y arrays and translates its 
  * coordinates according to x_trans and y_trans
@@ -88,21 +103,11 @@ void translate_polygon(double* x, double* y, int vertices, double x_trans, doubl
 
 }
 
+/* 
+ * Takes a polygon and rotates its coordinates about the center point
+ */
 void rotate_polygon(double* x, double* y, int vertices, double rot_radian) {
 
-}
-
-/*
- * Finds the bounding box for a polygon specified by x and y arrays.
- * Returns a double array containing the x_min, y_min, x_max, and y_max
- * (in that order)
- */
-double* bounding_box(double* x, double* y, int vertices) {
-    return 0; //avoid the compiler warnings
-}
-
-double* center_point(double* x, double* y, int vertices) {
-    return 0; //avoid the compiler warnings
 }
 
 
