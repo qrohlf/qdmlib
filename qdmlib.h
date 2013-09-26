@@ -1,6 +1,6 @@
 #include <FPT.h>
 /*
- * QUINN & MILES' FANTASTIC LIBRARY
+ * QUINN, DANI, & MILES' FANTASTIC LIBRARY
  * Licensed under the WTFPL
  */
 

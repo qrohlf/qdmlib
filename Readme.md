@@ -2,10 +2,10 @@ Installation:
 
 Put in `~/bash_profile`:
 
-    alias acom="acom -Ipath/to/qmlib/ path/to/qmlib/*.c"
+    alias acom="acom -Ipath/to/qdmlib/ path/to/qdmlib/*.c"
 
 Then, you can use
 
-    #include <qmlib.h>
+    #include <qdmlib.h>
 
 in your source files

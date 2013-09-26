@@ -1,9 +1,9 @@
 /*
- * QUINN & MILES' FANTASTIC LIBRARY
+ * QUINN, DANI, & MILES' FANTASTIC LIBRARY
  * Licensed under the WTFPL
  */
 
-#include "qmlib.h"
+#include "qmdlib.h"
 #include <math.h>
 
 /*
@@ -137,6 +137,9 @@ void pivot_point_about(double* x, double* y, double aboutx, double abouty, doubl
     *y = ynew + abouty;
 }
 
+/*
+ * apply the Pythagorean theorem
+ */
 double hyp(double x, double y) {
     return sqrt(x*x + y*y);
 }
