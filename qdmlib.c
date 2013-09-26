@@ -161,9 +161,6 @@ double perimeter(double* x, double* y, int n) {
 	for(int i=0; i<n; i++) {
 	  j = (i+1)%n ;
 		perim += sqrt(pow(x[i]-x[j], 2)+pow(y[i]-y[j], 2));
-
-		printf("Perim: %f\n", perim);
 	}
-	printf("---\n");
 	return perim;
 }
