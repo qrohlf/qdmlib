@@ -7,15 +7,15 @@
 #include <math.h>
 
 /*
- * Takes a file pointer located at the number of vertices, 
- * a double array to fill with the x coordinates, and a 
+ * Takes a file pointer located at the number of vertices,
+ * a double array to fill with the x coordinates, and a
  * double array to fill with x coordinates. Returns the number
- * of points read, and increments the file pointer past the 
+ * of points read, and increments the file pointer past the
  * last point read.
  */
 int read_points_from_file(FILE* f, double* x, double* y) {
 	int vertices;
-	
+
 	fscanf(f, "%d\n", &vertices);
 	printf("%d points read\n", vertices);
 	for (int i=0; i<vertices; i++) {
@@ -78,8 +78,8 @@ int in_range(double x, double a, double b) {
     return (x <= upper && x >= lower);
 }
 
-/* 
- * Takes a polygon specified by x and y arrays and scales its 
+/*
+ * Takes a polygon specified by x and y arrays and scales its
  * coordinates about the polygon's center point according to x_scale and y_scale
  */
 void scale_polygon(double* x, double* y, int n, double x_scale, double y_scale) {
@@ -95,8 +95,8 @@ void scale_polygon_about(double* x, double* y, int n, double x_scale, double y_s
     }
 }
 
-/* 
- * Takes a polygon specified by x and y arrays and translates its 
+/*
+ * Takes a polygon specified by x and y arrays and translates its
  * coordinates according to x_trans and y_trans
  */
 void translate_polygon(double* x, double* y, int n, double x_trans, double y_trans) {
@@ -106,7 +106,7 @@ void translate_polygon(double* x, double* y, int n, double x_trans, double y_tra
     }
 }
 
-/* 
+/*
  * Takes a polygon and rotates its coordinates about the center point
  */
 void rotate_polygon(double* x, double* y, int n, double radians) {

@@ -1,4 +1,4 @@
-Installation: 
+Installation:
 
 Put in `~/bash_profile`:
 
