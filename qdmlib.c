@@ -3,7 +3,7 @@
  * Licensed under the WTFPL
  */
 
-#include "qmdlib.h"
+#include "qdmlib.h"
 #include <math.h>
 
 /*
