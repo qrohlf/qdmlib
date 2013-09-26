@@ -14,14 +14,14 @@
  * last point read.
  */
 int read_points_from_file(FILE* f, double* x, double* y) {
-	int vertices;
+    int vertices;
 
-	fscanf(f, "%d\n", &vertices);
-	printf("%d points read\n", vertices);
-	for (int i=0; i<vertices; i++) {
-		fscanf(f, "%lf %lf", &x[i], &y[i]);
-	}
-	return vertices;
+    fscanf(f, "%d\n", &vertices);
+    printf("%d points read\n", vertices);
+    for (int i=0; i<vertices; i++) {
+        fscanf(f, "%lf %lf", &x[i], &y[i]);
+    }
+    return vertices;
 }
 
 /*
@@ -144,4 +144,13 @@ double hyp(double x, double y) {
     return sqrt(x*x + y*y);
 }
 
+/*
+ * Print two arrays x[] and y[] of size n
+ */
+void print_x_y(double *x, double *y, int n){
+    int i;
+    for(i = 0; i < n; i++){
+        printf("x: %lf, y: %lf\n", x[i], y[i]);
+    }
+}
 

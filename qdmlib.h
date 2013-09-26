@@ -19,3 +19,4 @@ void rotate_polygon(double*, double*, int, double);
 void rotate_polygon_about(double*, double*, int, double, double, double);
 void pivot_point_about(double*, double*, double, double, double);
 double hyp(double, double);
+void print_x_y(double *, double *, int);
