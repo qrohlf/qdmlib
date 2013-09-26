@@ -4,7 +4,7 @@
  */
 
 #include "qmlib.h"
-
+#include <math.h>
 
 /*
  * Takes a file pointer located at the number of vertices, 
@@ -99,15 +99,46 @@ void scale_polygon_about(double* x, double* y, int n, double x_scale, double y_s
  * Takes a polygon specified by x and y arrays and translates its 
  * coordinates according to x_trans and y_trans
  */
-void translate_polygon(double* x, double* y, int vertices, double x_trans, double y_trans) {
-
+void translate_polygon(double* x, double* y, int n, double x_trans, double y_trans) {
+    for (int i=0; i<n; i++) {
+        x[i] += x_trans;
+        y[i] += y_trans;
+    }
 }
 
 /* 
  * Takes a polygon and rotates its coordinates about the center point
  */
-void rotate_polygon(double* x, double* y, int vertices, double rot_radian) {
+void rotate_polygon(double* x, double* y, int n, double radians) {
+    double centerx = (max(x, n) + min(x, n))/2;
+    double centery = (max(y, n) + min(y, n))/2;
+    rotate_polygon_about(x, y, n, radians, centerx, centery);
+}
 
+void rotate_polygon_about(double* x, double* y, int n, double radians, double aboutx, double abouty) {
+    double h;
+    for (int i=0; i<n; i++) {
+        h = hyp(x[i] - aboutx, y[i] - abouty);
+        pivot_point_about(&x[i], &y[i], aboutx, abouty, radians);
+    }
+}
+
+/*
+ * Rotate a single point about another point
+ */
+void pivot_point_about(double* x, double* y, double aboutx, double abouty, double radians) {
+    *x -= aboutx;
+    *y -= abouty;
+
+    double xnew = *x*cos(radians) - *y*sin(radians);
+    double ynew = *x*sin(radians) + *y*cos(radians);
+
+    *x = xnew + aboutx;
+    *y = ynew + abouty;
+}
+
+double hyp(double x, double y) {
+    return sqrt(x*x + y*y);
 }
 
 
