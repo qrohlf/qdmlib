@@ -1,5 +1,4 @@
 #include <FPT.h>
-#include "matrixstuff.h"
 /*
  * QUINN, DANI, & MILES' FANTASTIC LIBRARY
  * Licensed under the WTFPL
