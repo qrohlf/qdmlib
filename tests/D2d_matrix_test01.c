@@ -54,7 +54,7 @@ int main(int argc, char const *argv[])
     };
   D2d_print_mat(c);
   D2d_mat_mult(res, c, d);
-  printf("C*D:\n");
+  printf("\nC*D:\n");
   D2d_print_mat(res);
     return 0;
 }
