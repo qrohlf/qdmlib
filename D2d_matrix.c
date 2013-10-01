@@ -1,7 +1,10 @@
 #include <D2d_matrix.h>
 
 
-
+/*
+ * Print a 3x3 matrix to stdout
+ * Tested, working
+ */
 int D2d_print_mat (double a[3][3]) {
     for (int i = 0; i < 3; i++) {
         printf("%.0f %.0f %.0f \n", a[i][0], a[i][1], a[i][2]);
@@ -9,7 +12,10 @@ int D2d_print_mat (double a[3][3]) {
     return 0;
 }
 
-/* Copy the contents of b into a */
+/* 
+ * Copy the contents of b into a 
+ * Tested, working
+ */
 int D2d_copy_mat (double a[3][3], double b[3][3]) {
     for (int i = 0; i < 3; i++) {
         for(int j=0; j < 3; j++) {
@@ -19,20 +25,28 @@ int D2d_copy_mat (double a[3][3], double b[3][3]) {
     return 0; //What are we supposed to return here?
 }
 
-/* DANGER WILL ROBINSON
- * this overwrites b with a transposed version.
+/*
+ * res = a.b
+ * SAFE: will not modify a or b.
+ * Tested, working
  */
 int D2d_mat_mult (double res[3][3], double a[3][3], double b[3][3]) {
     double B[3][3];
     D2d_transpose(b, B);
+    double A[3][3];
+    D2d_copy_mat(A, a);
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
-            res[i][j] = D2d_dot(a[i], B[j]);
+            res[i][j] = D2d_dot(A[i], B[j]);
         }
     }
     return 0; //What are we supposed to return here?
 }
 
+/*
+ * Write an identity matrix to a
+ * Tested, working
+ */
 int D2d_make_identity (double a[3][3]) {
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
@@ -42,7 +56,25 @@ int D2d_make_identity (double a[3][3]) {
     return 0; //TODO: implement this function and remove this comment
 }
 
+/*
+ * Generate a translation matrix.
+ * a = translation*a
+ * b = b*translation_inverse
+ * DANGER WILL ROBINSON: THIS FUNCTION HAS NOT BEEN TESTED
+ */
 int D2d_translate (double a[3][3], double b[3][3], double dx, double dy) {
+    double trans[3][3] = {
+        {1, 0, dx},
+        {0, 1, dy},
+        {0, 0, 1}
+    };
+    double trans_inv[3][3] = {
+        {1, 0, -dx},
+        {0, 1, -dy},
+        {0, 0, 1}
+    };
+    D2d_mat_mult(a, a, trans);
+    D2d_mat_mult(b, b, trans_inv);
     return 0; //TODO: implement this function and remove this comment
 }
 
