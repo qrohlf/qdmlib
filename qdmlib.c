@@ -24,23 +24,26 @@ int read_points_from_file(FILE* f, double* x, double* y) {
     return vertices;
 }
 
+void swap(double* a, double* b) {
+    double tmp = *a;
+    *a = *b;
+    *b = tmp;
+}
+
 /*
  * Sort an array of doubles containing n elements in ascending order
  */
-void sort_asc(double* arr, int n) {
+void sort_asc(double* x, int n) {
     int min;
     double temp;
     for(int i=0; i<n; i++) {
-        min = i; //min holds the location of the smallest known item
-        // If there are any smaller values past i, swap them with i
-        for(int j=i+1; j<n; j++) {
-            if (arr[j] < arr[min]) {
+        int min = i;
+        for (int j = i; j < n; j++) {
+            if (x[min] > x[j]) {
                 min = j;
-                temp = arr[i];
-                arr[i] = arr[min];
-                arr[min] = temp;
             }
         }
+        swap(&x[i], &x[min]);
     }
 }
 
