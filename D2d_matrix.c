@@ -89,7 +89,7 @@ int D2d_scale (double a[3][3], double b[3][3], double sx, double sy) {
         {0, 1/sy, 0},
         {0, 0, 1}
     };
-    D2d_mult(a, a, scale);
+    D2d_mat_mult(a, a, scale);
     D2d_mat_mult(b, b, scale_inv);
     return 0; //TODO: implement this function and remove this comment
 }
