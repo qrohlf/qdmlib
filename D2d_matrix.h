@@ -11,11 +11,11 @@
 /*
 
  ( x')          (x)
- ( y')  =   M * (y)  
+ ( y')  =   M * (y)
  ( 1 )          (1)
 
 
-instead of (x',y',1) = (x,y,1) * M  
+instead of (x',y',1) = (x,y,1) * M
 
 */
 
@@ -26,33 +26,33 @@ int D2d_copy_mat (double a[3][3], double b[3][3]) ;
 
 int D2d_mat_mult (double res[3][3], double a[3][3], double b[3][3]) ;
 // res = a * b
-// this is SAFE, i.e. the user can make a call such as 
+// this is SAFE, i.e. the user can make a call such as
 // D2d_mat_mult(p,  p,q) or D2d_mat_mult(p,  q,p) or  D2d_mat_mult(p, p,p)
 
 int D2d_make_identity (double a[3][3]) ;
 // a = I
 
-int D2d_translate (double a[3][3], double b[3][3], double dx, double dy) ; 
-// a = translation*a  
-// b = b*translation_inverse  
+int D2d_translate (double a[3][3], double b[3][3], double dx, double dy) ;
+// a = translation*a
+// b = b*translation_inverse
 
 int D2d_scale (double a[3][3], double b[3][3], double sx, double sy) ;
-// a = scale*a  
-// b = b*scale_inverse  
+// a = scale*a
+// b = b*scale_inverse
 
 int D2d_rotate (double a[3][3], double b[3][3], double radians) ;
-// a = rotate*a  
-// b = b*rotate_inverse  
+// a = rotate*a
+// b = b*rotate_inverse
 
 int D2d_negate_x (double a[3][3], double b[3][3]) ;
 // negate the x....reflects in the y-axis
-// a = reflect*a 
-// b = b*reflect_inverse  
+// a = reflect*a
+// b = b*reflect_inverse
 
 int D2d_negate_y (double a[3][3], double b[3][3]) ;
 // negate the y....reflects in the x-axis
-// a = reflect*a 
-// b = b*reflect_inverse  
+// a = reflect*a
+// b = b*reflect_inverse
 
 int D2d_mat_mult_points (double *X, double *Y,
                          double m[3][3],

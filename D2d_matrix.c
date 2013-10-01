@@ -12,8 +12,8 @@ int D2d_print_mat (double a[3][3]) {
     return 0;
 }
 
-/* 
- * Copy the contents of b into a 
+/*
+ * Copy the contents of b into a
  * Tested, working
  */
 int D2d_copy_mat (double a[3][3], double b[3][3]) {
@@ -79,6 +79,18 @@ int D2d_translate (double a[3][3], double b[3][3], double dx, double dy) {
 }
 
 int D2d_scale (double a[3][3], double b[3][3], double sx, double sy) {
+    double scale[3][3] = {
+        {sx, 0, 0},
+        {0, sy, 0},
+        {0, 0, 1}
+    };
+    double scale_inv[3][3] = {
+        {1/sx, 0, 0},
+        {0, 1/sy, 0},
+        {0, 0, 1}
+    };
+    D2d_mult(a, a, scale);
+    D2d_mat_mult(b, b, scale_inv);
     return 0; //TODO: implement this function and remove this comment
 }
 
@@ -97,11 +109,10 @@ int D2d_negate_y (double a[3][3], double b[3][3]) {
 int D2d_mat_mult_points (double *X, double *Y,
                          double m[3][3],
                          double *x, double *y, int numpoints) {
-
     return 0; //TODO: implement this function and remove this comment
 }
 
-/* 
+/*
  * Transpose a into b
  */
 int D2d_transpose (double a[3][3], double b[3][3]) {
