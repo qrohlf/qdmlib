@@ -110,11 +110,27 @@ int D2d_rotate (double a[3][3], double b[3][3], double radians) {
     return 0; //TODO: implement this function and remove this comment
 }
 
+// DANGER WILL ROBINSON, NOT TESTED
 int D2d_negate_x (double a[3][3], double b[3][3]) {
+    double negate[3][3] = {
+        {-1, 0, 0},
+        {0, 1, 0},
+        {0, 0, 1}
+    };
+    D2d_mat_mult(a, a, negate);
+    D2d_mat_mult(b, b, negate);
     return 0; //TODO: implement this function and remove this comment
 }
 
+// DANGER WILL ROBINSON, NOT TESTED
 int D2d_negate_y (double a[3][3], double b[3][3]) {
+    double negate[3][3] = {
+        {1, 0, 0},
+        {0, -1, 0},
+        {0, 0, 1}
+    };
+    D2d_mat_mult(a, a, negate);
+    D2d_mat_mult(b, b, negate);
     return 0; //TODO: implement this function and remove this comment
 }
 
