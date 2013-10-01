@@ -1,0 +1,13 @@
+After a translation by 2, 1 and a rotation by 225 degrees, followed by a magnification by 2 and then a rotation by -45 degrees and finally a translation by 0, -2 this image is eventually produced.
+
+Accurately draw the original object.
+
+End result:
+    Points:
+        (2, 0)
+        (2, -2)
+        (6, 0)
+        (6, -2)
+        (8, 0)
+
+    Final image is a rectangle with triangle attached
