@@ -109,6 +109,15 @@ int D2d_negate_y (double a[3][3], double b[3][3]) {
 int D2d_mat_mult_points (double *X, double *Y,
                          double m[3][3],
                          double *x, double *y, int numpoints) {
+    double coord[3] = {0, 0, 1};
+
+    for (int i = 0; i < numpoints; i++) {
+        coord[0] = x[i];
+        coord[1] = y[i];
+        X[i] = D2d_dot(m[0], coord);
+        Y[i] = D2d_dot(m[1], coord);
+    }
+
     return 0; //TODO: implement this function and remove this comment
 }
 
