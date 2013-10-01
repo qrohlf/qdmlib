@@ -63,4 +63,9 @@ int D2d_mat_mult_points (double *X, double *Y,
 
 // SAFE, user may make a call like D2d_mat_mult_points (x,y, m, x,y, n) ;
 
+int D2d_transpose (double a[3][3], double b[3][3]);
+
+double D2d_dot (double a[3], double b[3]);
+// [a, b, c] [d, e, f] -> a*d+b*c+c*f
+
 #endif
