@@ -7,7 +7,7 @@
  */
 int D2d_print_mat (double a[3][3]) {
     for (int i = 0; i < 3; i++) {
-        printf("%.0f %.0f %.0f \n", a[i][0], a[i][1], a[i][2]);
+        printf("%10.3f %10.3f %10.3f \n", a[i][0], a[i][1], a[i][2]);
     }
     return 0;
 }
