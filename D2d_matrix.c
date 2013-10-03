@@ -73,7 +73,7 @@ int D2d_translate (double a[3][3], double b[3][3], double dx, double dy) {
         {0, 1, -dy},
         {0, 0, 1}
     };
-    D2d_mat_mult(a, a, trans);
+    D2d_mat_mult(a, trans, a);
     D2d_mat_mult(b, b, trans_inv);
     return 0; //TODO: implement this function and remove this comment
 }
@@ -89,7 +89,7 @@ int D2d_scale (double a[3][3], double b[3][3], double sx, double sy) {
         {0, 1/sy, 0},
         {0, 0, 1}
     };
-    D2d_mat_mult(a, a, scale);
+    D2d_mat_mult(a, scale, a);
     D2d_mat_mult(b, b, scale_inv);
     return 0; //TODO: implement this function and remove this comment
 }
@@ -105,7 +105,7 @@ int D2d_rotate (double a[3][3], double b[3][3], double radians) {
         {-sin(-radians), cos(-radians), 0},
         {0, 0, 1}
     };
-    D2d_mat_mult(a, a, rotate);
+    D2d_mat_mult(a, rotate, a);
     D2d_mat_mult(b, b, rotate_inv);
     return 0; //TODO: implement this function and remove this comment
 }
@@ -117,7 +117,7 @@ int D2d_negate_x (double a[3][3], double b[3][3]) {
         {0, 1, 0},
         {0, 0, 1}
     };
-    D2d_mat_mult(a, a, negate);
+    D2d_mat_mult(a, negate, a);
     D2d_mat_mult(b, b, negate);
     return 0; //TODO: implement this function and remove this comment
 }
@@ -129,7 +129,7 @@ int D2d_negate_y (double a[3][3], double b[3][3]) {
         {0, -1, 0},
         {0, 0, 1}
     };
-    D2d_mat_mult(a, a, negate);
+    D2d_mat_mult(a, negate, a);
     D2d_mat_mult(b, b, negate);
     return 0; //TODO: implement this function and remove this comment
 }
