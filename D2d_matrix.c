@@ -96,13 +96,13 @@ int D2d_scale (double a[3][3], double b[3][3], double sx, double sy) {
 
 int D2d_rotate (double a[3][3], double b[3][3], double radians) {
     double rotate[3][3] = {
-        {cos(radians), sin(radians), 0},
-        {-sin(radians), cos(radians), 0},
+        {cos(radians), -sin(radians), 0},
+        {sin(radians), cos(radians), 0},
         {0, 0, 1}
     };
     double rotate_inv[3][3] = {
-        {cos(-radians), sin(-radians), 0},
-        {-sin(-radians), cos(-radians), 0},
+        {cos(radians), sin(radians), 0},
+        {-sin(radians), cos(radians), 0},
         {0, 0, 1}
     };
     D2d_mat_mult(a, rotate, a);
