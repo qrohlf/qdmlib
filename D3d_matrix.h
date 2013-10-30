@@ -117,5 +117,7 @@ int D3d_mat_mult_points (double *X, double *Y, double *Z,
 
 double D3d_dot (double a[4], double b[4]);
 
+int D3d_transpose (double a[4][4], double b[4][4]);
+
 
 #endif
