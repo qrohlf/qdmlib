@@ -116,19 +116,15 @@ void draw_shape(shape* s, object2d* obj, int fill) {
     else G_polygon(x, y, s->n);
 }
 
-void render_object3d(object3d* obj, object2d* result, double fov, double viewdistance) {
+void render_object3d(object3d* obj, object2d* result, double h, double viewdistance) {
     double x, y, z;
     result->n = obj->n;
     for (int i=0; i<obj->n; i++) {
         x = obj->xs[i];
         y = obj->ys[i];
         z = obj->zs[i];
-        
-        // orthagonal
-        // result->xs[i] = x*fov + 300;
-        // result->ys[i] = y*fov + 300;
-        result->xs[i] = x*fov/(z - viewdistance) + 300;
-        result->ys[i] = y*fov/(z - viewdistance) + 300;
+        result->xs[i] = x*(300/tan(h))/(z + viewdistance) + 300;
+        result->ys[i] = y*(300/tan(h))/(z + viewdistance) + 300;
     }
     result->num_shapes = obj->num_shapes;
     for (int i=0; i<obj->num_shapes; i++) {
