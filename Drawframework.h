@@ -1,8 +1,9 @@
-#ifndef Drawframework
-#define Drawframework
+#ifndef DRAWFRAMEWORK_H
+#define DRAWFRAMEWORK_H
 #include <FPT.h>
 #include <qdmlib.h>
 #include <D3d_matrix.h>
+#include <D2d_matrix.h>
 #define true 1
 #define false 0
 
@@ -50,10 +51,10 @@ typedef struct {
 
 typedef struct {
     int num_shapes;
-    double xs[10000];
-    double ys[10000];
-    double zs[10000];
-    shape shapes[10000];
+    double xs[5000];
+    double ys[5000];
+    double zs[5000];
+    shape shapes[5000];
     int n;
 } object3d;
 
@@ -73,5 +74,8 @@ void clip_line(object2d* fig, point2d l1, point2d l2);
 void clip_shape(shape* fig, object2d* parent, point2d l1, point2d l2);
 int isRight(point2d a, point2d b, point2d c);
 void draw_shape(shape* s, object2d* obj, int fill);
+double angle_between(double i[3], double j[3]);
+double magnitude(double i[3]);
+void normal_vector(object3d* parent, shape* shape, double r[3]);
 
 #endif

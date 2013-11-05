@@ -126,9 +126,21 @@ void render_object3d(object3d* obj, object2d* result, double h, double viewdista
         result->xs[i] = x*(300/tan(h))/(z + viewdistance) + 300;
         result->ys[i] = y*(300/tan(h))/(z + viewdistance) + 300;
     }
-    result->num_shapes = obj->num_shapes;
+
+    double r[3];
+    double v[3];
+    result->num_shapes = 0;
+    shape* s;
     for (int i=0; i<obj->num_shapes; i++) {
-        result->shapes[i] = obj->shapes[i];
+        s = &obj->shapes[i];
+        r[0] = obj->xs[s->vertices[0]];
+        r[1] = obj->ys[s->vertices[0]];
+        r[2] = obj->zs[s->vertices[0]] - viewdistance;
+        normal_vector(obj, &obj->shapes[i], v);
+        if (angle_between(r, v) > M_PI/2) {
+            result->shapes[result->num_shapes] = obj->shapes[i];
+            result->num_shapes++;
+        }
     }
 }
 
@@ -229,4 +241,32 @@ void clip_shape(shape* fig, object2d* parent, point2d l1, point2d l2) {
 // Use the cross product to tell if a point2d is on the right or colinear of the line bc
 int isRight(point2d a, point2d b, point2d c){
      return ((b.x - a.x)*(c.y - a.y) - (b.y - a.y)*(c.x - a.x)) <= 0;
+}
+
+// Use the cross product to get the normal vector of a plane.
+// Assumes that the shape has >= 3 points defined and that all points are on the same plane.
+void normal_vector(object3d* parent, shape* shape, double r[3]) {
+    double u[3]; //First vector
+    u[0] = parent->xs[shape->vertices[0]] - parent->xs[shape->vertices[1]];
+    u[1] = parent->ys[shape->vertices[0]] - parent->ys[shape->vertices[1]];
+    u[2] = parent->zs[shape->vertices[0]] - parent->zs[shape->vertices[1]];
+
+    double v[3]; //Second vector
+    v[0] = parent->xs[shape->vertices[0]] - parent->xs[shape->vertices[2]];
+    v[1] = parent->ys[shape->vertices[0]] - parent->ys[shape->vertices[2]];
+    v[2] = parent->zs[shape->vertices[0]] - parent->zs[shape->vertices[2]];
+
+    r[0] = u[1]*v[2] - u[2]*v[1];
+    r[1] = u[0]*v[2] - u[2]*v[0];
+    r[2] = u[0]*v[1] - u[1]*v[0];
+}
+
+// Use the inverse cosine of the dot product to find the angle between
+// Two vectors
+double angle_between(double i[3], double j[3]) {
+    return acos(D2d_dot(i, j)/(magnitude(i) + magnitude(j)));
+}
+
+double magnitude(double i[3]) {
+    return sqrt(i[0]*i[0] + i[1]*i[1] + i[2]*i[2]);
 }

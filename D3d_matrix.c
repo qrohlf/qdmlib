@@ -88,9 +88,9 @@ int D3d_scale (double a[4][4], double b[4][4], double sx, double sy, double sz) 
         {0, 0,  0, 1}
     };
     double scale_inv[4][4] = {
-        {-sx, 0, 0, 0},
-        {0, -sy, 0, 0},
-        {0, 0, -sz, 0},
+        {1/sx, 0, 0, 0},
+        {0, 1/sy, 0, 0},
+        {0, 0, 1/sz, 0},
         {0, 0,  0, 1}
     };
     D3d_mat_mult(a, scale, a);
