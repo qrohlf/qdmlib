@@ -77,5 +77,6 @@ void draw_shape(shape* s, object2d* obj, int fill);
 double angle_between(double i[3], double j[3]);
 double magnitude(double i[3]);
 void normal_vector(object3d* parent, shape* shape, double r[3]);
+void draw_vector(double loc[3], double vec[3], double fov, double viewdistance);
 
 #endif

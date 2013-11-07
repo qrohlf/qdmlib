@@ -116,15 +116,15 @@ void draw_shape(shape* s, object2d* obj, int fill) {
     else G_polygon(x, y, s->n);
 }
 
-void render_object3d(object3d* obj, object2d* result, double h, double viewdistance) {
+void render_object3d(object3d* obj, object2d* result, double fov, double viewdistance) {
     double x, y, z;
     result->n = obj->n;
     for (int i=0; i<obj->n; i++) {
         x = obj->xs[i];
         y = obj->ys[i];
         z = obj->zs[i];
-        result->xs[i] = x*(300/tan(h))/(z + viewdistance) + 300;
-        result->ys[i] = y*(300/tan(h))/(z + viewdistance) + 300;
+        result->xs[i] = x*(300/tan(fov))/(z + viewdistance) + 300;
+        result->ys[i] = y*(300/tan(fov))/(z + viewdistance) + 300;
     }
 
     double r[3];
@@ -135,13 +135,19 @@ void render_object3d(object3d* obj, object2d* result, double h, double viewdista
         s = &obj->shapes[i];
         r[0] = obj->xs[s->vertices[0]];
         r[1] = obj->ys[s->vertices[0]];
-        r[2] = obj->zs[s->vertices[0]] - viewdistance;
-        normal_vector(obj, &obj->shapes[i], v);
-        if (angle_between(r, v) > M_PI/2) {
+        r[2] = obj->zs[s->vertices[0]] + viewdistance;
+        normal_vector(obj, &obj->shapes[i], v); //not the problem
+        double a = angle_between(r, v); //problem somewhere here
+        if (a < M_PI/2) {
+            draw_vector(r, v, fov, viewdistance);
+            printf("angle for shape %d* is %f (normal: %.2f %.2f %.2f) (vec: %.2f %.2f %.2f)\n", i, a, v[0], v[1], v[2], r[0], r[1], r[2]);
             result->shapes[result->num_shapes] = obj->shapes[i];
             result->num_shapes++;
+        } else {  
+            printf("angle for shape %d  is %f (normal: %.2f %.2f %.2f) (vec: %.2f %.2f %.2f)\n", i, a, v[0], v[1], v[2], r[0], r[1], r[2]);
         }
     }
+    printf("\n");
 }
 
 /*
@@ -252,21 +258,39 @@ void normal_vector(object3d* parent, shape* shape, double r[3]) {
     u[2] = parent->zs[shape->vertices[0]] - parent->zs[shape->vertices[1]];
 
     double v[3]; //Second vector
-    v[0] = parent->xs[shape->vertices[0]] - parent->xs[shape->vertices[2]];
-    v[1] = parent->ys[shape->vertices[0]] - parent->ys[shape->vertices[2]];
-    v[2] = parent->zs[shape->vertices[0]] - parent->zs[shape->vertices[2]];
+    v[0] = parent->xs[shape->vertices[1]] - parent->xs[shape->vertices[2]];
+    v[1] = parent->ys[shape->vertices[1]] - parent->ys[shape->vertices[2]];
+    v[2] = parent->zs[shape->vertices[1]] - parent->zs[shape->vertices[2]];
 
     r[0] = u[1]*v[2] - u[2]*v[1];
-    r[1] = u[0]*v[2] - u[2]*v[0];
+    r[1] = u[2]*v[0] - u[0]*v[2];
     r[2] = u[0]*v[1] - u[1]*v[0];
 }
 
 // Use the inverse cosine of the dot product to find the angle between
 // Two vectors
 double angle_between(double i[3], double j[3]) {
-    return acos(D2d_dot(i, j)/(magnitude(i) + magnitude(j)));
+    return acos(D3d_dot(i, j)/(magnitude(i) * magnitude(j)));
 }
 
 double magnitude(double i[3]) {
-    return sqrt(i[0]*i[0] + i[1]*i[1] + i[2]*i[2]);
+    return sqrt(pow(i[0], 2) + pow(i[1], 2) + pow(i[2], 2));
+}
+
+void draw_vector(double loc[3], double vec[3], double fov, double viewdistance) {
+    double x1 = loc[0];
+    double y1 = loc[1];
+    double z1 = loc[2];
+    double x2 = x1 + vec[0];
+    double y2 = y1 + vec[1];
+    double z2 = z1 + vec[2];
+    G_rgb(0, 1, 1);
+    G_fill_circle(
+        x1*(300/tan(fov))/(z1) + 300,
+        y1*(300/tan(fov))/(z1) + 300, 5);
+    G_line(
+        x1*(300/tan(fov))/(z1) + 300,
+        y1*(300/tan(fov))/(z1) + 300,
+        x2*(300/tan(fov))/(z2) + 300,
+        y2*(300/tan(fov))/(z2) + 300);
 }
