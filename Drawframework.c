@@ -139,8 +139,9 @@ void render_object3d(object3d* obj, object2d* result, double fov, double viewdis
         normal_vector(obj, &obj->shapes[i], v); //not the problem
         double a = angle_between(r, v); //problem somewhere here
         if (a < M_PI/2) {
-            draw_vector(r, v, fov, viewdistance);
-            printf("angle for shape %d* is %f (normal: %.2f %.2f %.2f) (vec: %.2f %.2f %.2f)\n", i, a, v[0], v[1], v[2], r[0], r[1], r[2]);
+            //debug information
+            //draw_vector(r, v, fov, viewdistance);
+            //printf("angle for shape %d* is %f (normal: %.2f %.2f %.2f) (vec: %.2f %.2f %.2f)\n", i, a, v[0], v[1], v[2], r[0], r[1], r[2]);
             result->shapes[result->num_shapes] = obj->shapes[i];
             result->num_shapes++;
         } else {  
@@ -293,4 +294,35 @@ void draw_vector(double loc[3], double vec[3], double fov, double viewdistance) 
         y1*(300/tan(fov))/(z1) + 300,
         x2*(300/tan(fov))/(z2) + 300,
         y2*(300/tan(fov))/(z2) + 300);
+}
+
+void center_of_mass(object3d* obj, point3d* result) {
+    for (int i=0; i<obj->n; i++) {
+        result->x += obj->xs[i];
+        result->y += obj->ys[i];
+        result->z += obj->zs[i];
+    }
+    result->x = result->x/obj->n;
+    result->y = result->y/obj->n;
+    result->z = result->z/obj->n;
+}
+
+/*
+ * Rotate an object3d about its center of mass by x, y, z radians on the x, y z, axes (respectively)
+ */
+void object3d_rotate(object3d* obj, double x, double y, double z) {
+    double transform[4][4], useless[4][4];
+    D3d_make_identity(transform);
+    point3d center;
+    center_of_mass(obj, &center);
+    printf("center of mass is %f %f %f\n", center.x, center.y, center.z);
+    // translate to the origin
+    D3d_translate(transform, useless, -center.x, -center.y, -center.z);
+    D3d_rotate_x(transform, useless, x);
+    D3d_rotate_y(transform, useless, y);
+    D3d_rotate_z(transform, useless, z);
+    // translate back from the origin
+    D3d_translate(transform, useless, center.x, center.y, center.z);
+    // apply!
+    transform_object3d(obj, transform);
 }
