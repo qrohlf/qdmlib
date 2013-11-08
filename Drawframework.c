@@ -14,6 +14,9 @@ void read_object3d_from_file(FILE* f, object3d* obj) {
         shape = &obj->shapes[i];
         read_shape_from_file(f, shape);
     }
+    center_of_mass(obj, &obj->xs[obj->n], &obj->ys[obj->n], &obj->zs[obj->n]);
+    obj->center = obj->n;
+    obj->n++;
     printf("done reading object\n");
 }
 
@@ -145,10 +148,9 @@ void render_object3d(object3d* obj, object2d* result, double fov, double viewdis
             result->shapes[result->num_shapes] = obj->shapes[i];
             result->num_shapes++;
         } else {  
-            printf("angle for shape %d  is %f (normal: %.2f %.2f %.2f) (vec: %.2f %.2f %.2f)\n", i, a, v[0], v[1], v[2], r[0], r[1], r[2]);
+            //printf("angle for shape %d  is %f (normal: %.2f %.2f %.2f) (vec: %.2f %.2f %.2f)\n", i, a, v[0], v[1], v[2], r[0], r[1], r[2]);
         }
     }
-    printf("\n");
 }
 
 /*
@@ -296,15 +298,15 @@ void draw_vector(double loc[3], double vec[3], double fov, double viewdistance) 
         y2*(300/tan(fov))/(z2) + 300);
 }
 
-void center_of_mass(object3d* obj, point3d* result) {
+void center_of_mass(object3d* obj, double* x, double* y, double* z) {
     for (int i=0; i<obj->n; i++) {
-        result->x += obj->xs[i];
-        result->y += obj->ys[i];
-        result->z += obj->zs[i];
+        *x += obj->xs[i];
+        *y += obj->ys[i];
+        *z += obj->zs[i];
     }
-    result->x = result->x/obj->n;
-    result->y = result->y/obj->n;
-    result->z = result->z/obj->n;
+    *x = *x/obj->n;
+    *y = *y/obj->n;
+    *z = *z/obj->n;
 }
 
 /*
@@ -313,16 +315,35 @@ void center_of_mass(object3d* obj, point3d* result) {
 void object3d_rotate(object3d* obj, double x, double y, double z) {
     double transform[4][4], useless[4][4];
     D3d_make_identity(transform);
-    point3d center;
-    center_of_mass(obj, &center);
-    printf("center of mass is %f %f %f\n", center.x, center.y, center.z);
+    int c = obj->center;
+    //center_of_mass(obj, &center);
+    //printf("center of mass is %f %f %f\n", center.x, center.y, center.z);
     // translate to the origin
-    D3d_translate(transform, useless, -center.x, -center.y, -center.z);
+    D3d_translate(transform, useless, -obj->xs[c], -obj->ys[c], -obj->zs[c]);
     D3d_rotate_x(transform, useless, x);
     D3d_rotate_y(transform, useless, y);
     D3d_rotate_z(transform, useless, z);
     // translate back from the origin
-    D3d_translate(transform, useless, center.x, center.y, center.z);
+    D3d_translate(transform, useless, obj->xs[c], obj->ys[c], obj->zs[c]);
+    // apply!
+    transform_object3d(obj, transform);
+}
+
+/*
+ * Scale an object3d about its center of mass by x, y, z scalefactors
+ * not yet tested
+ */
+void object3d_scale(object3d* obj, double x, double y, double z) {
+    double transform[4][4], useless[4][4];
+    D3d_make_identity(transform);
+    int c = obj->center;
+    //center_of_mass(obj, &center);
+    //printf("center of mass is %f %f %f\n", center.x, center.y, center.z);
+    // translate to the origin
+    D3d_translate(transform, useless, -obj->xs[c], -obj->ys[c], -obj->zs[c]);
+    D3d_scale(transform, useless, x, y, z);
+    // translate back from the origin
+    D3d_translate(transform, useless, obj->xs[c], obj->ys[c], obj->zs[c]);
     // apply!
     transform_object3d(obj, transform);
 }

@@ -62,7 +62,7 @@ typedef struct {
     double zs[5000];
     shape shapes[5000];
     int n;
-    point3d center;
+    int center; //the index of the center point (which is stored with all the other points)
 } object3d;
 
 void read_object3d_from_file(FILE* f, object3d* obj);
@@ -85,6 +85,7 @@ double angle_between(double i[3], double j[3]);
 double magnitude(double i[3]);
 void normal_vector(object3d* parent, shape* shape, double r[3]);
 void draw_vector(double loc[3], double vec[3], double fov, double viewdistance);
-void center_of_mass(object3d* obj, point3d* result);
+void center_of_mass(object3d* obj, double* x, double* y, double* z);
 void object3d_rotate(object3d* obj, double x, double y, double z);
+void object3d_scale(object3d* obj, double x, double y, double z);
 #endif
