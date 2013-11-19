@@ -10,12 +10,16 @@
 /*
  * shape definition. Needs to be wrapped in a 2dObject or 3dObject to work.
  */
+struct object3d;
+typedef struct object3d object3d;
+
 typedef struct {
     int n;                  //Number of points in the shape
     int vertices[20];     //List of points to connect in the parent 2dObject to make the shape
     double R;
     double G;
     double B;
+    object3d* parent;
 } shape;
 
 /*
@@ -55,7 +59,7 @@ typedef struct {
     double z;
 } point3d;
 
-typedef struct {
+struct object3d {
     int num_shapes;
     double xs[5000];
     double ys[5000];
@@ -63,7 +67,7 @@ typedef struct {
     shape shapes[5000];
     int n;
     int center; //the index of the center point (which is stored with all the other points)
-} object3d;
+};
 
 void read_object3d_from_file(FILE* f, object3d* obj);
 void read_object2d_from_file(FILE* f, object2d *obj);
@@ -88,4 +92,7 @@ void draw_vector(double loc[3], double vec[3], double fov, double viewdistance);
 void center_of_mass(object3d* obj, double* x, double* y, double* z);
 void object3d_rotate(object3d* obj, double x, double y, double z);
 void object3d_scale(object3d* obj, double x, double y, double z);
+void sort_shapes_by_z(object3d* obj);
+double distance(shape* s);
+int shape_compare_distance (const void* p1, const void* p2);
 #endif

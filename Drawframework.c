@@ -12,6 +12,10 @@ void read_object3d_from_file(FILE* f, object3d* obj) {
     shape* shape;
     for (int i=0; i<obj->num_shapes; i++) {
         shape = &obj->shapes[i];
+        shape->R = 1;
+        shape->G = 1;
+        shape->B = 1;
+        shape->parent = obj;
         read_shape_from_file(f, shape);
     }
     center_of_mass(obj, &obj->xs[obj->n], &obj->ys[obj->n], &obj->zs[obj->n]);
@@ -90,7 +94,17 @@ void print_shape(shape* shape) {
 void draw_object3d(object3d* obj, double fov, double viewdistance) {
     object2d renderResult;
     render_object3d(obj, &renderResult, fov, viewdistance);
-    draw_object2d_wireframe(&renderResult);
+    double xs[20];
+    double ys[20];
+    shape* s;
+    for (int i=0; i<renderResult.num_shapes; i++) {
+        s = &renderResult.shapes[i];
+        draw_shape(s, &renderResult, true);
+        s->R = 0;
+        s->G = 0;
+        s->B = 0;
+        draw_shape(s, &renderResult, false);
+    }
 }
 
 void draw_object2d(object2d* obj) {
@@ -346,4 +360,19 @@ void object3d_scale(object3d* obj, double x, double y, double z) {
     D3d_translate(transform, useless, obj->xs[c], obj->ys[c], obj->zs[c]);
     // apply!
     transform_object3d(obj, transform);
+}
+
+void sort_shapes_by_z(object3d* obj) {
+    qsort(obj->shapes, obj->num_shapes, sizeof(shape), shape_compare_distance);
+}
+
+double distance(shape* s) {
+    double x = s->parent->xs[s->vertices[0]];
+    double y = s->parent->ys[s->vertices[0]];
+    double z = s->parent->zs[s->vertices[0]];
+    return sqrt(pow(x, 2) + pow(y, 2) + pow(z, 2));
+}
+
+int shape_compare_distance (const void* s1, const void* s2) {
+    return distance((shape*)s1) - distance((shape*)s2);
 }
