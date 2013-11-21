@@ -13,6 +13,9 @@ void read_object3d_from_file(FILE* f, object3d* obj) {
     for (int i=0; i<obj->num_shapes; i++) {
         shape = &obj->shapes[i];
         read_shape_from_file(f, shape);
+        shape->R = 0;
+        shape->G = 1;
+        shape->B = 1;
     }
     center_of_mass(obj, &obj->xs[obj->n], &obj->ys[obj->n], &obj->zs[obj->n]);
     obj->center = obj->n;
