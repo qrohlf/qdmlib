@@ -134,6 +134,7 @@ void draw_shape(shape* s, object2d* obj, int fill) {
 }
 
 void render_object3d(object3d* obj, object2d* result, double fov, double viewdistance) {
+    sort_shapes_by_z(obj);
     double x, y, z;
     result->n = obj->n;
     for (int i=0; i<obj->n; i++) {
@@ -148,14 +149,16 @@ void render_object3d(object3d* obj, object2d* result, double fov, double viewdis
     double v[3];
     result->num_shapes = 0;
     shape* s;
+    printf("\n");
     for (int i=0; i<obj->num_shapes; i++) {
         s = &obj->shapes[i];
+        printf("Shape distance: %f\n", distance(s));
         r[0] = obj->xs[s->vertices[0]];
         r[1] = obj->ys[s->vertices[0]];
         r[2] = obj->zs[s->vertices[0]] + viewdistance;
         normal_vector(obj, &obj->shapes[i], v); //not the problem
         double a = angle_between(r, v); //problem somewhere here
-        if (a < M_PI/2) {
+        if (true||a < M_PI/2) {
             //debug information
             //draw_vector(r, v, fov, viewdistance);
             //printf("angle for shape %d* is %f (normal: %.2f %.2f %.2f) (vec: %.2f %.2f %.2f)\n", i, a, v[0], v[1], v[2], r[0], r[1], r[2]);
@@ -165,6 +168,40 @@ void render_object3d(object3d* obj, object2d* result, double fov, double viewdis
             //printf("angle for shape %d  is %f (normal: %.2f %.2f %.2f) (vec: %.2f %.2f %.2f)\n", i, a, v[0], v[1], v[2], r[0], r[1], r[2]);
         }
     }
+}
+
+void object3d_concat(object3d* obj, object3d* toAdd) {
+    printf("big->n is %d\n", obj->n);
+    //Copy all the points from toAdd to obj
+    for (int i=0; i<toAdd->n; i++) {
+        obj->xs[obj->n+i] = toAdd->xs[i];
+        obj->ys[obj->n+i] = toAdd->ys[i];
+        obj->zs[obj->n+i] = toAdd->zs[i];
+    }
+    //Copy all the shapes from toAdd to obj
+    for (int i=0; i<toAdd->num_shapes; i++) {
+        obj->shapes[obj->num_shapes+i] = toAdd->shapes[i];
+        obj->shapes[obj->num_shapes+i].parent = obj;
+        //Update shape vertex indices
+        for (int j=0; j<obj->shapes[obj->num_shapes+i].n; j++) {
+            obj->shapes[obj->num_shapes+i].vertices[j] += obj->n;
+        }
+    }
+    obj->n += toAdd->n;
+    obj->num_shapes += toAdd->num_shapes;
+}
+
+void draw_object3ds(object3d objs[], int num_objects, double fov, double viewdistance) {
+    //copy all objs into a single object
+    printf("got to draw_object3ds num_objects is %d\n", num_objects);
+    object3d big = {0, {}, {}, {}, {}, 0, 0};
+    for (int i=0; i<num_objects; i++) {
+        object3d_concat(&big, &objs[i]);
+    }
+    printf("DONE WITH LOOPS\n");
+    print_object3d(&objs[0]);
+    print_object3d(&big);
+    draw_object3d(&big, fov, viewdistance);
 }
 
 /*
@@ -367,12 +404,22 @@ void sort_shapes_by_z(object3d* obj) {
 }
 
 double distance(shape* s) {
-    double x = s->parent->xs[s->vertices[0]];
-    double y = s->parent->ys[s->vertices[0]];
-    double z = s->parent->zs[s->vertices[0]];
+    double x = 0;
+    double y = 0;
+    double z = 0;
+    for (int i=0; i<s->n; i++) {
+        x += s->parent->xs[s->vertices[i]];
+        y += s->parent->ys[s->vertices[i]];
+        z += s->parent->zs[s->vertices[i]];
+    }
+    x = x/(double)s->n;
+    y = y/(double)s->n;
+    z = z/(double)s->n;
     return sqrt(pow(x, 2) + pow(y, 2) + pow(z, 2));
 }
 
 int shape_compare_distance (const void* s1, const void* s2) {
-    return distance((shape*)s1) - distance((shape*)s2);
+    double difference = distance((shape*)s1) - distance((shape*)s2);
+    if (difference == 0) return 0;
+    return (difference > 0)?-1:1;
 }

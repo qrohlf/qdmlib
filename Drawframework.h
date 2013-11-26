@@ -76,6 +76,7 @@ void print_object2d(object2d* obj);
 void print_shape(shape* shape);
 void read_shape_from_file(FILE* f, shape* shape);
 void draw_object3d(object3d* obj, double fov, double viewdistance);
+void draw_object3ds(object3d objs[], int num_objects, double fov, double viewdistance);
 void draw_object2d(object2d* obj);
 void draw_object2d_wireframe(object2d* obj);
 void render_object3d(object3d* obj, object2d* result, double fov, double viewdistance);
