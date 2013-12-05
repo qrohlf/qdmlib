@@ -152,7 +152,7 @@ void render_object3d(object3d* obj, object2d* result, double fov, double viewdis
     printf("\n");
     for (int i=0; i<obj->num_shapes; i++) {
         s = &obj->shapes[i];
-        printf("Shape distance: %f\n", distance(s));
+        //printf("Shape distance: %f\n", distance(s));
         r[0] = obj->xs[s->vertices[0]];
         r[1] = obj->ys[s->vertices[0]];
         r[2] = obj->zs[s->vertices[0]] + viewdistance;
