@@ -12,7 +12,7 @@ void read_object3d_from_file(FILE* f, object3d* obj) {
     shape* shape;
     for (int i=0; i<obj->num_shapes; i++) {
         shape = &obj->shapes[i];
-        shape->R = 1;
+        shape->R = 0;
         shape->G = 1;
         shape->B = 1;
         shape->parent = obj;
@@ -134,6 +134,10 @@ void draw_shape(shape* s, object2d* obj, int fill) {
 }
 
 void render_object3d(object3d* obj, object2d* result, double fov, double viewdistance) {
+    //color the object
+    point3d light_pos = {.5, 1, .1};
+    lightmodel lm = {.2, .5, 50};
+    light_model(obj, light_pos, lm);
     sort_shapes_by_z(obj);
     double x, y, z;
     result->n = obj->n;
@@ -321,17 +325,17 @@ void normal_vector(object3d* parent, shape* shape, double r[3]) {
     r[2] = u[0]*v[1] - u[1]*v[0];
 }
 
-// Apply a light model to an object. Safe, so in can be the same as out.
-void light_model(object3d* in, object3d* out, point3d light_pos) {
-    object3d copy;
-    if (in == out) {    //Only copy the data if necessary, for the sake of efficiency
-        copy = &in;     //^the above comment is a joke given the context. ha ha.  
-        in = &copy;
-    }
-    double N[3];
-    double L[3];
-    double a;
+// Apply a light model to an object.
+void light_model(object3d* in, point3d light_pos, lightmodel lm) {
+    point3d eye_pos = {0, 0, 0};
+    double N[3]; //Normal vector of shape
+    double L[3]; //Vector from shape->light
+    double E[3]; //Vector from shape->eye
+    double R[3]; //Reflected ray vector
+    double a, d, spec, I; //alpha, diffuse component, specular component, Intensity
+    double specular_weight = 1.0 - lm.ambient_weight - lm.diffuse_weight;
     shape* s;
+    point3d centerpoint;
     //For each shape in object3d
     for (int i=0; i<in->num_shapes; i++) {
         s = &in->shapes[i];
@@ -339,10 +343,51 @@ void light_model(object3d* in, object3d* out, point3d light_pos) {
         normal_vector(in, s, N);
         unit_vector(N, N); //hope this works
         //compute the vector to the light source
-        
+        center(s, &centerpoint);
+        vector(centerpoint, light_pos, L); //alpha maybe works now?!
+        unit_vector(L, L);
+        //compute alpha
+        a = angle_between(N, L);
+        //compute diffuse component
+        d = -D3d_dot(N, L);
+        if (d < 0) d = 0;
+        //compute the eye vector
+        vector(centerpoint, eye_pos, E);
+        unit_vector(E, E);
+        //compute the reflected ray vector
+        R[0] = N[0] - L[0]; 
+        R[1] = N[1] - L[1];
+        R[2] = N[2] - L[2];
+        unit_vector(R, R);
+        printf("R: %f %f %f\n", R[0], R[1], R[2]);
+        spec = -D2d_dot(E, R);
+        if (spec < 0) spec = 0;
 
+        //compute intensity
+        I = lm.ambient_weight + (d*lm.diffuse_weight) + (pow(spec, lm.specular_power)*specular_weight);
+        printf("d: %f, spec: %f, I: %f\n", d, spec, I);
+        tint_color(s, I, lm);
     }
+}
 
+//shift a color's shape based on its intensity I
+void tint_color(shape* s, double I, lightmodel lm) {
+    double neutral = lm.ambient_weight + lm.diffuse_weight;
+    double p;
+    if (I < neutral) {
+        //darken
+        p = I/neutral;
+        s->R = s->R*p;
+        s->G = s->G*p;
+        s->B = s->B*p;
+    }
+    if (I > neutral) {
+        //brighten
+        p = (I - neutral)/(1-neutral);
+        s->R = p*(1-s->R) + s->R;
+        s->G = p*(1-s->G) + s->G;
+        s->B = p*(1-s->B) + s->B;
+    }
 
 }
 
@@ -448,6 +493,12 @@ void center (shape* s, point3d* p) {
     p->x = x/(double)s->n;
     p->y = y/(double)s->n;
     p->z = z/(double)s->n;
+}
+
+void vector(point3d p1, point3d p2, double v[3]) {
+    v[0] = p2.x - p1.x;
+    v[1] = p2.y - p1.y;
+    v[2] = p2.z - p1.z;
 }
 
 double distance(shape* s) {

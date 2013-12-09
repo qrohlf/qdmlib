@@ -69,6 +69,12 @@ struct object3d {
     int center; //the index of the center point (which is stored with all the other points)
 };
 
+typedef struct {
+    double ambient_weight;
+    double diffuse_weight;
+    double specular_power;
+} lightmodel;
+
 void read_object3d_from_file(FILE* f, object3d* obj);
 void read_object2d_from_file(FILE* f, object2d *obj);
 void print_object3d(object3d* obj);
@@ -98,4 +104,7 @@ double distance(shape* s);
 int shape_compare_distance (const void* p1, const void* p2);
 void unit_vector(double v[3], double r[3]);
 void center (shape* s, point3d* p);
+void vector(point3d p1, point3d p2, double r[3]);
+void tint_color(shape* s, double I, lightmodel lm);
+void light_model(object3d* in, point3d light_pos, lightmodel lm);
 #endif
