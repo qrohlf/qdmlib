@@ -96,4 +96,6 @@ void object3d_scale(object3d* obj, double x, double y, double z);
 void sort_shapes_by_z(object3d* obj);
 double distance(shape* s);
 int shape_compare_distance (const void* p1, const void* p2);
+void unit_vector(double v[3], double r[3]);
+void center (shape* s, point3d* p);
 #endif

@@ -321,6 +321,39 @@ void normal_vector(object3d* parent, shape* shape, double r[3]) {
     r[2] = u[0]*v[1] - u[1]*v[0];
 }
 
+// Apply a light model to an object. Safe, so in can be the same as out.
+void light_model(object3d* in, object3d* out, point3d light_pos) {
+    object3d copy;
+    if (in == out) {    //Only copy the data if necessary, for the sake of efficiency
+        copy = &in;     //^the above comment is a joke given the context. ha ha.  
+        in = &copy;
+    }
+    double N[3];
+    double L[3];
+    double a;
+    shape* s;
+    //For each shape in object3d
+    for (int i=0; i<in->num_shapes; i++) {
+        s = &in->shapes[i];
+        //compute the normal vector
+        normal_vector(in, s, N);
+        unit_vector(N, N); //hope this works
+        //compute the vector to the light source
+        
+
+    }
+
+
+}
+
+// Computes the unit vector for v 
+void unit_vector(double v[3], double r[3]) {
+    double mag = magnitude(v);
+    r[0] = v[0]/mag;
+    r[1] = v[1]/mag;
+    r[2] = v[2]/mag;
+}
+
 // Use the inverse cosine of the dot product to find the angle between
 // Two vectors
 double angle_between(double i[3], double j[3]) {
@@ -401,6 +434,20 @@ void object3d_scale(object3d* obj, double x, double y, double z) {
 
 void sort_shapes_by_z(object3d* obj) {
     qsort(obj->shapes, obj->num_shapes, sizeof(shape), shape_compare_distance);
+}
+
+void center (shape* s, point3d* p) {
+    double x = 0;
+    double y = 0;
+    double z = 0;
+    for (int i=0; i<s->n; i++) {
+        x += s->parent->xs[s->vertices[i]];
+        y += s->parent->ys[s->vertices[i]];
+        z += s->parent->zs[s->vertices[i]];
+    }
+    p->x = x/(double)s->n;
+    p->y = y/(double)s->n;
+    p->z = z/(double)s->n;
 }
 
 double distance(shape* s) {
