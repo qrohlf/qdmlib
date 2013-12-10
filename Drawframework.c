@@ -296,7 +296,61 @@ void clip_shape(shape* fig, object2d* parent, point2d l1, point2d l2) {
 
 // Clip object3d fig by a plane defined by abc
 void clip_object3d(object3d* fig, point3d a, point3d b, point3d c) {
+    for (int i=0; i<fig->num_shapes; i++) {
+        clip_shape_3d(&fig->shapes[i], fig, a, b, c);
+    }
+}
 
+void clip_shape_3d(shape* fig, object3d* parent, point3d a, point3d b, point3d c) {
+	double plane_normal[3];
+	double ab[3];
+	double bc[3];
+
+	double ap1[3];
+	double p1p2[3];
+
+	double dotted;
+
+	shape out = *fig;
+	out.n = 0;
+
+	for (int i = 0; i < fig->n; i++){
+        i1 = fig->vertices[i];
+       	i2 = fig->vertices[(i+1)%fig->n];
+       	point3d p1 = {parent->xs[i1], parent->ys[i1], parent->zs[i2]};
+        point3d p2 = {parent->xs[i2], parent->ys[i2], parent->zs[i2]};
+
+        ab[0] = b.x - a.x;
+        ab[1] = b.y - a.y;
+        ab[2] = b.z - a.z;
+
+        bc[0] = c.x - b.x;
+        bc[1] = c.y - b.y;
+        bc[2] = c.z - b.z;
+
+        ap1[0] = p1.x - a.x;
+        ap1[1] = p1.y - a.y;
+        ap1[2] = p1.z - a.z;
+
+        plane_normal[0] = ab[1]*bc[2] - ab[2]*bc[1];
+    	plane_normal[1] = ab[2]*bc[0] - ab[0]*bc[2];
+    	plane_normal[2] = ab[0]*bc[1] - ab[1]*bc[0];
+
+        p1p2[0] = p2.x - p1.x;
+        p1p2[1] = p2.y - p1.y;
+        p1p2[2] = p2.z - p1.z;
+
+       	dotted = D3d_dot(ap1, plane_normal);
+
+       	if (dotted >= 0) {
+       		out.vertices[out.n] = i1;
+       		out.n++;
+       	}
+
+       	point3d intersect;
+
+
+	}
 }
 
 // Use the cross product to tell if a point2d is on the right or colinear of the line bc
