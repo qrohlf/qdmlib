@@ -294,6 +294,11 @@ void clip_shape(shape* fig, object2d* parent, point2d l1, point2d l2) {
     *fig = out;
 }
 
+// Clip object3d fig by a plane defined by abc
+void clip_object3d(object3d* fig, point3d a, point3d b, point3d c) {
+
+}
+
 // Use the cross product to tell if a point2d is on the right or colinear of the line bc
 int isRight(point2d a, point2d b, point2d c){
      return ((b.x - a.x)*(c.y - a.y) - (b.y - a.y)*(c.x - a.x)) <= 0;

@@ -108,4 +108,5 @@ void vector(point3d p1, point3d p2, double r[3]);
 void tint_color(shape* s, double I, lightmodel lm);
 void light_model(object3d* in, point3d light_pos, lightmodel lm);
 void color_obj(object3d* obj, double R, double G, double B);
+void clip_object3d(object3d* fig, point3d a, point3d b, point3d c);
 #endif
