@@ -91,9 +91,9 @@ void print_shape(shape* shape) {
     printf("\n");
 }
 
-void draw_object3d(object3d* obj, double fov, double viewdistance) {
+void draw_object3d(object3d* obj, double fov, point3d light_pos, lightmodel lm) {
     object2d renderResult;
-    render_object3d(obj, &renderResult, fov, viewdistance);
+    render_object3d(obj, &renderResult, fov, light_pos, lm);
     double xs[20];
     double ys[20];
     shape* s;
@@ -133,10 +133,8 @@ void draw_shape(shape* s, object2d* obj, int fill) {
     else G_polygon(x, y, s->n);
 }
 
-void render_object3d(object3d* obj, object2d* result, double fov, double viewdistance) {
+void render_object3d(object3d* obj, object2d* result, double fov, point3d light_pos, lightmodel lm) {
     //color the object
-    point3d light_pos = {.5, 1, .1};
-    lightmodel lm = {.2, .5, 50};
     light_model(obj, light_pos, lm);
     sort_shapes_by_z(obj);
     double x, y, z;
@@ -145,21 +143,20 @@ void render_object3d(object3d* obj, object2d* result, double fov, double viewdis
         x = obj->xs[i];
         y = obj->ys[i];
         z = obj->zs[i];
-        result->xs[i] = x*(300/tan(fov))/(z + viewdistance) + 300;
-        result->ys[i] = y*(300/tan(fov))/(z + viewdistance) + 300;
+        result->xs[i] = x*(300/tan(fov))/z + 300;
+        result->ys[i] = y*(300/tan(fov))/z + 300;
     }
 
     double r[3];
     double v[3];
     result->num_shapes = 0;
     shape* s;
-    printf("\n");
     for (int i=0; i<obj->num_shapes; i++) {
         s = &obj->shapes[i];
         //printf("Shape distance: %f\n", distance(s));
         r[0] = obj->xs[s->vertices[0]];
         r[1] = obj->ys[s->vertices[0]];
-        r[2] = obj->zs[s->vertices[0]] + viewdistance;
+        r[2] = obj->zs[s->vertices[0]];
         normal_vector(obj, &obj->shapes[i], v); //not the problem
         double a = angle_between(r, v); //problem somewhere here
         if (true||a < M_PI/2) {
@@ -175,7 +172,6 @@ void render_object3d(object3d* obj, object2d* result, double fov, double viewdis
 }
 
 void object3d_concat(object3d* obj, object3d* toAdd) {
-    printf("big->n is %d\n", obj->n);
     //Copy all the points from toAdd to obj
     for (int i=0; i<toAdd->n; i++) {
         obj->xs[obj->n+i] = toAdd->xs[i];
@@ -195,17 +191,13 @@ void object3d_concat(object3d* obj, object3d* toAdd) {
     obj->num_shapes += toAdd->num_shapes;
 }
 
-void draw_object3ds(object3d objs[], int num_objects, double fov, double viewdistance) {
+void draw_object3ds(object3d objs[], int num_objects, double fov, point3d light_pos, lightmodel lm) {
     //copy all objs into a single object
-    printf("got to draw_object3ds num_objects is %d\n", num_objects);
     object3d big = {0, {}, {}, {}, {}, 0, 0};
     for (int i=0; i<num_objects; i++) {
         object3d_concat(&big, &objs[i]);
     }
-    printf("DONE WITH LOOPS\n");
-    print_object3d(&objs[0]);
-    print_object3d(&big);
-    draw_object3d(&big, fov, viewdistance);
+    draw_object3d(&big, fov, light_pos, lm);
 }
 
 /*
@@ -359,13 +351,13 @@ void light_model(object3d* in, point3d light_pos, lightmodel lm) {
         R[1] = N[1] - L[1];
         R[2] = N[2] - L[2];
         unit_vector(R, R);
-        printf("R: %f %f %f\n", R[0], R[1], R[2]);
+        //printf("R: %f %f %f\n", R[0], R[1], R[2]);
         spec = -D2d_dot(E, R);
         if (spec < 0) spec = 0;
 
         //compute intensity
         I = lm.ambient_weight + (d*lm.diffuse_weight) + (pow(spec, lm.specular_power)*specular_weight);
-        printf("d: %f, spec: %f, I: %f\n", d, spec, I);
+        //printf("d: %f, spec: %f, I: %f\n", d, spec, I);
         tint_color(s, I, lm);
     }
 }
@@ -520,4 +512,12 @@ int shape_compare_distance (const void* s1, const void* s2) {
     double difference = distance((shape*)s1) - distance((shape*)s2);
     if (difference == 0) return 0;
     return (difference > 0)?-1:1;
+}
+
+void color_obj(object3d* obj, double R, double G, double B) {
+    for (int i=0; i<obj->num_shapes; i++) {
+        obj->shapes[i].R = R;
+        obj->shapes[i].G = G;
+        obj->shapes[i].B = B;
+    }
 }

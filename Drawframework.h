@@ -72,7 +72,7 @@ struct object3d {
 typedef struct {
     double ambient_weight;
     double diffuse_weight;
-    double specular_power;
+    int specular_power;
 } lightmodel;
 
 void read_object3d_from_file(FILE* f, object3d* obj);
@@ -81,11 +81,11 @@ void print_object3d(object3d* obj);
 void print_object2d(object2d* obj);
 void print_shape(shape* shape);
 void read_shape_from_file(FILE* f, shape* shape);
-void draw_object3d(object3d* obj, double fov, double viewdistance);
-void draw_object3ds(object3d objs[], int num_objects, double fov, double viewdistance);
+void draw_object3d(object3d* obj, double fov, point3d light_pos, lightmodel lm);
+void draw_object3ds(object3d objs[], int num_objects, double fov, point3d light_pos, lightmodel lm);
 void draw_object2d(object2d* obj);
 void draw_object2d_wireframe(object2d* obj);
-void render_object3d(object3d* obj, object2d* result, double fov, double viewdistance);
+void render_object3d(object3d* obj, object2d* result, double fov, point3d light_pos, lightmodel lm);
 void transform_object3d(object3d* obj, double mat[4][4]);
 void clip_object2d(object2d* obj, polygon* win);
 void clip_line(object2d* fig, point2d l1, point2d l2);
@@ -107,4 +107,5 @@ void center (shape* s, point3d* p);
 void vector(point3d p1, point3d p2, double r[3]);
 void tint_color(shape* s, double I, lightmodel lm);
 void light_model(object3d* in, point3d light_pos, lightmodel lm);
+void color_obj(object3d* obj, double R, double G, double B);
 #endif

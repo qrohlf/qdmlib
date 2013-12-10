@@ -133,6 +133,7 @@ int D3d_rotate_y (double a[4][4], double b[4][4], double r) {
     };
     D3d_mat_mult(a, rotate, a);
     D3d_mat_mult(b, b, rotate_inv);
+    return 0;
 }
 // a = rotate*a  
 // b = b*rotate_inverse  
@@ -154,6 +155,7 @@ int D3d_rotate_z (double a[4][4], double b[4][4], double r) {
     };
     D3d_mat_mult(a, rotate, a);
     D3d_mat_mult(b, b, rotate_inv);
+    return 0;
 }
 // a = rotate*a  
 // b = b*rotate_inverse  
@@ -196,6 +198,7 @@ int D3d_cs_rotate_y (double a[4][4], double b[4][4], double cs, double sn) {
     };
     D3d_mat_mult(a, rotate, a);
     D3d_mat_mult(b, b, rotate_inv);
+    return 0;
 }
 // a = rotate*a  
 // b = b*rotate_inverse  
@@ -216,6 +219,7 @@ int D3d_cs_rotate_z (double a[4][4], double b[4][4], double cs, double sn) {
     };
     D3d_mat_mult(a, rotate, a);
     D3d_mat_mult(b, b, rotate_inv);
+    return 0;
 }
 // a = rotate*a  
 // b = b*rotate_inverse  
