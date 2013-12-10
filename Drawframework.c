@@ -334,6 +334,9 @@ void light_model(object3d* in, point3d light_pos, lightmodel lm) {
         //compute the normal vector
         normal_vector(in, s, N);
         unit_vector(N, N); //hope this works
+        N[0] = -N[0]; //OH GOD WHY
+        N[1] = -N[1];
+        N[2] = -N[2];
         //compute the vector to the light source
         center(s, &centerpoint);
         vector(centerpoint, light_pos, L); //alpha maybe works now?!
@@ -347,9 +350,9 @@ void light_model(object3d* in, point3d light_pos, lightmodel lm) {
         vector(centerpoint, eye_pos, E);
         unit_vector(E, E);
         //compute the reflected ray vector
-        R[0] = N[0] - L[0]; 
-        R[1] = N[1] - L[1];
-        R[2] = N[2] - L[2];
+        R[0] = -N[0] - L[0];
+        R[1] = -N[1] - L[1];
+        R[2] = -N[2] - L[2];
         unit_vector(R, R);
         //printf("R: %f %f %f\n", R[0], R[1], R[2]);
         spec = -D2d_dot(E, R);
